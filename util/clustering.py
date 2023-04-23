@@ -54,10 +54,10 @@ def HDBSCAN_cluster(trajectory_list, distance_matrix, min_cluster_size, min_samp
     return num_cluster, result, noise
 
 # GMM equal length
-def GMM_cluster(trajectory_list, distance_matrix, num_cluster, iter):
-    gmm = GaussianMixture(n_components=num_cluster, max_iter=iter)
+def GMM_cluster(trajectory_list, distance_matrix, num_cluster, max_iter):
+    gmm = GaussianMixture(n_components=num_cluster, max_iter=max_iter)
     # print(trajectory_list)
-    labels = gmm.fit_predict(trajectory_list)
+    labels = gmm.fit_predict(distance_matrix)
     
     result = [[] for i in range(num_cluster)]
     size = len(trajectory_list)
