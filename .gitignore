@@ -1,3 +1,2 @@
 /hdbscan_cache/*
-/data/1/*.npz
-/data/1/*.pkl
+/data/*

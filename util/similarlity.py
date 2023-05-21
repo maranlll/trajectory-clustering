@@ -2,14 +2,19 @@ from scipy.spatial.distance import directed_hausdorff
 import math
 import numpy as np
 from scipy.sparse import lil_matrix
-from util.point import Point, to_numpy
+from entity.point import Point, to_numpy
 from tqdm import tqdm
-import multiprocessing 
+import multiprocessing
+from util.dtw import dtw, accelerated_dtw
 
 POOL_SIZE = 8
 
 def hausdorff(traj1, traj2):
     return max(directed_hausdorff(traj1, traj2)[0], directed_hausdorff(traj2, traj1)[0])
+
+def dtw_distance(traj1, traj2):
+    # return dtw(traj1, traj2, dist=lambda x, y: np.sqrt(np.sum((x - y) ** 2)))[0]
+    return accelerated_dtw(traj1, traj2, 'euclidean', 1)[0]
 
 def point_to_vector_distance(p, p1, p2):
     v1 = to_numpy(p1, p)
@@ -58,11 +63,21 @@ def generate_dense_distance_matrix(trajectory_list):
     print("start generate dense distance_matrix")
     size = len(trajectory_list)
     # distance_matrix = np.empty((size, size))
+    
+    # for i in tqdm(range(size)):
+    #     for j in range(i, size):
+    #         distance = hausdorff(trajectory_list[i], trajectory_list[j])
+    #         distance_matrix[i, j] = distance
+    #         distance_matrix[j, i] = distance
+    
+    # print("finish generate distance_matrix")
+    # return distance_matrix
+    
     distance_matrix = multiprocessing.Array('d', size * size)
 
     p = []
     for i in range(POOL_SIZE):
-        tmp = multiprocessing.Process(target=multi_cal, args=(trajectory_list, distance_matrix, int(i * size / 8), int((i + 1) * size / 8), size))
+        tmp = multiprocessing.Process(target=multi_cal, args=(trajectory_list, distance_matrix, int(i * size / POOL_SIZE), int((i + 1) * size / POOL_SIZE), size))
         p.append(tmp)
         tmp.start()
         
@@ -71,4 +86,3 @@ def generate_dense_distance_matrix(trajectory_list):
     
     print("finish generate distance_matrix")
     return np.frombuffer(distance_matrix.get_obj()).reshape((size, size))
-

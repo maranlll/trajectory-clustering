@@ -13,11 +13,20 @@ def subplot(nrows, ncols, index):
 def subplot(args):
     plt.subplot(args)
     
-def plot(x, y):
-    plt.plot(x, y)
+def plot(x, y, *args, **kwargs):
+    plt.plot(x, y, *args, **kwargs)
+    
+def xlim(xmin, xmax):
+    plt.xlim(xmin, xmax)
+    
+def ylim(ymin, ymax):
+    plt.ylim(ymin, ymax)
 
 def show():
     plt.show()
+    
+def scatter(x, y, *args, **kwargs):
+    plt.scatter(x, y, *args, **kwargs)
 
 def plot_trajectory(trajectory, color=(np.random.random(), np.random.random(), np.random.random()), alpha=1.0):
     plt.plot([p[0] for p in trajectory], [p[1] for p in trajectory], c=color, alpha=alpha)

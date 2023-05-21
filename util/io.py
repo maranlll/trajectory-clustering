@@ -2,6 +2,7 @@ import numpy as np
 import scipy.io
 import pickle
 import scipy.sparse
+import json
 
 def read_from_mat(fileName):
     print("start read data")
@@ -31,3 +32,12 @@ def load_distance_matrix(filename):
     d = scipy.sparse.load_npz(filename)
     d = scipy.sparse.lil_matrix(d)
     return d
+
+def load_json(filename):
+    with open(filename, "r") as f:
+        d = json.load(f)
+    return d
+
+def save_json(data, filename):
+    with open(filename, "w", newline='\n') as f:
+        json.dump(data, f)

@@ -4,7 +4,8 @@ class Timer:
     def __init__(self):
         self.time = 0
 
-    def start(self):
+    def start(self, message = ""):
+        print(message)
         self.time = time.time()
 
     def end(self, message = ""):
